@@ -6,7 +6,7 @@ const morgan = require('morgan');
 //Settings
 app.set('port', 3001);
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs')
+app.set('view engine', 'ejs');
 
 //Middlewares
 app.use(morgan('dev'));
