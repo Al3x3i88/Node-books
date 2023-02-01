@@ -65,7 +65,7 @@ router.get('/:id', (req, res) => {
 // Modificar un libro teniendo el id de este
 router.put('/:id', (req, res) => {
     
-    const newData = req.body;
+    const newData = req.query;
     const bookFound = books.find(book => book.id === req.params.id);
     console.log(bookFound);
     if (!bookFound)
@@ -73,12 +73,12 @@ router.put('/:id', (req, res) => {
             message: "Libro no encontrado",
         });
 
-    const newBooks = books.map(b => b.id === req.params.id ? { ...b, ...newData } : b)
-    const json_books = JSON.stringify(newBooks)
-    // fs.writeFileSync('src/books.json', json_books, 'utf-8')
-
-    res.send('Actualizando un libro')
-    
+    books = books.map(b => b.id === req.params.id ? { ...b, ...newData } : b)
+    console.log(books);
+    const json_books = JSON.stringify(books)
+    fs.writeFileSync('src/books.json', json_books, 'utf-8')
+  res.send('Datos del libro Actualizados')
+             
 })
 
 module.exports = router;
