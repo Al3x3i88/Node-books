@@ -5,14 +5,15 @@ const { v4: uuidv4 } = require('uuid')
 
 // Leyendo los datos que tiene almacenados el archivo .json
 const json_books = fs.readFileSync('src/books.json', 'utf-8')
-let books = JSON.parse(json_books);
+let fichero = JSON.parse(json_books);
+let arrayBooks = fichero.books;
 
-router.get('/', (req, res) => {
-    res.render('index.ejs', {
-        books
-    })
+// router.get('/', (req, res) => {
+//     res.render('index.ejs', {
+//         books
+//     })
 
-})
+// })
 
 // Al solicitar la ruta /new-entry voy a renderizar la view new-entry
 router.get('/new-entry', (req, res) => {
@@ -34,11 +35,12 @@ router.post('/new-entry', (req, res) => {
         description
     }
 
-    books.push(newBook);
-    const json_books = JSON.stringify(books)
+    arrayBooks.push(newBook);
+  
+    const json_books = JSON.stringify(fichero)
     fs.writeFileSync('src/books.json', json_books, 'utf-8')
-
-    res.redirect('/');
+    res.send('Nuevo libro Agregado')
+    // res.redirect('/');
 })
 
 // Eliminando un libro 
