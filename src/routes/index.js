@@ -8,12 +8,12 @@ const json_books = fs.readFileSync('src/books.json', 'utf-8')
 let fichero = JSON.parse(json_books);
 let arrayBooks = fichero.books;
 
-// router.get('/', (req, res) => {
-//     res.render('index.ejs', {
-//         books
-//     })
+router.get('/', (req, res) => {
+    res.render('index.ejs', {
+        arrayBooks
+    })
 
-// })
+})
 
 // Al solicitar la ruta /new-entry voy a renderizar la view new-entry
 router.get('/new-entry', (req, res) => {
@@ -43,10 +43,11 @@ router.post('/new-entry', (req, res) => {
     // res.redirect('/');
 })
 
-// Eliminando un libro 
+// Eliminando un libro
 router.get('/delete/:id', (req, res) => {
-    books = books.filter(book => book.id != req.params.id);
-    const json_books = JSON.stringify(books)
+    arrayBooks = arrayBooks.filter(book => book.id != req.params.id);
+    fichero = {...fichero, "books":arrayBooks}
+    const json_books = JSON.stringify(fichero)
     fs.writeFileSync('src/books.json', json_books, 'utf-8')
 
     res.redirect('/');
@@ -56,7 +57,7 @@ router.get('/delete/:id', (req, res) => {
 router.get('/:id', (req, res) => {
     console.log(req.params.id);
 
-    const bookFound = books.find(book => book.id === req.params.id);
+    const bookFound = arrayBooks.find(book => book.id === req.params.id);
     if (!bookFound)
         return res.status(404).json({
             message: "Libro no encontrado",
@@ -68,16 +69,17 @@ router.get('/:id', (req, res) => {
 router.put('/:id', (req, res) => {
     
     const newData = req.query;
-    const bookFound = books.find(book => book.id === req.params.id);
+    const bookFound = arrayBooks.find(book => book.id === req.params.id);
     console.log(bookFound);
     if (!bookFound)
         return res.status(404).json({
             message: "Libro no encontrado",
         });
 
-    books = books.map(b => b.id === req.params.id ? { ...b, ...newData } : b)
-    console.log(books);
-    const json_books = JSON.stringify(books)
+        arrayBooks = arrayBooks.map(b => b.id === req.params.id ? { ...b, ...newData } : b)
+    console.log(arrayBooks);
+    fichero = {...fichero, "books":arrayBooks}
+    const json_books = JSON.stringify(fichero)
     fs.writeFileSync('src/books.json', json_books, 'utf-8')
   res.send('Datos del libro Actualizados')
              
