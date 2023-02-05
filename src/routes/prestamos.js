@@ -15,7 +15,7 @@ router.get('/prestamos', (req, res) => {
     console.log(users);
 })
 
-router.get('/prestamos/:idUser/:idBook', (req, res) => {
+router.post('/prestamos/:idUser/:idBook', (req, res) => {
 
     const bookFound = books.find(book => book.id === req.params.idBook);
     const userFound = users.find(user => user.id === req.params.idUser);
@@ -44,18 +44,19 @@ router.get('/prestamos/:idUser/:idBook', (req, res) => {
             }
         }
 
-        if (libro.length !== 0) {
-            console.log('El libro ya existe esta prestado a este usuario');
-        } else
+        if (libro !== undefined && libro.length !== 0) {
+            console.log('El libro ya esta prestado a este usuario');
+        } 
+        else if (libro === undefined || arrayPrestamos.length === 0) {
+            arrayPrestamos.push(newPrestamo)
+        }else
 
             arrayPrestamos[posicion].book.push(bookFound);
         console.log(arrayPrestamos);
 
-    } else {
-        arrayPrestamos.push(newPrestamo)
-    }
+    } 
 
-    fichero = {...fichero, "prestamos":arrayPrestamos}
+    fichero = { ...fichero, "prestamos": arrayPrestamos }
     const json_users = JSON.stringify(fichero)
     fs.writeFileSync('src/books.json', json_users, 'utf-8')
     res.send('Usuario Agregado correctamente')
