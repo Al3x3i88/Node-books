@@ -7,6 +7,7 @@ const { v4: uuidv4 } = require('uuid')
 const json_users = fs.readFileSync('src/books.json', 'utf-8')
 let fichero = JSON.parse(json_users);
 let arrayUsers = fichero.users;
+let arrayPrestamos = fichero.prestamos;
 
 router.get('/users', (req, res) => {
     res.render('new-users');
@@ -15,7 +16,7 @@ router.get('/users', (req, res) => {
 // Agregando un nuevo usuario al json
 router.post('/users', (req, res) => {
     const { name, email, password } = req.body;
-    if ( !name || !email || !password ) {
+    if (!name || !email || !password) {
         res.status(400).send('Debe llenar todos los campos');
         return;
     }
@@ -27,11 +28,45 @@ router.post('/users', (req, res) => {
     }
 
     arrayUsers.push(newUser);
-    
+
     const json_users = JSON.stringify(fichero)
     fs.writeFileSync('src/books.json', json_users, 'utf-8')
     res.send('Usuario Agregado correctamente')
     // res.redirect('/');
+})
+
+// Eliminando un Usuario
+router.get('/deleteUser/:id', (req, res) => {
+    let userExist;
+    let position;
+    if (arrayUsers.length !== 0) {
+        for (let i = 0; i < arrayPrestamos.length; i++) {
+
+            if (arrayPrestamos[i].idUser === req.params.id) {
+    
+                userExist = arrayPrestamos[i]
+                
+                position = i;
+                
+            }
+        }
+        if (userExist === undefined || arrayPrestamos[position].book.length === 0) {
+            console.log('eliminar usuario');
+            console.log(arrayPrestamos[2].book.length);
+           
+            arrayUsers = arrayUsers.filter(user => user.id !== req.params.id);
+            console.log(arrayUsers);
+            fichero = { ...fichero, "users": arrayUsers }
+            const json_books = JSON.stringify(fichero)
+            fs.writeFileSync('src/books.json', json_books, 'utf-8')
+        }else{
+            console.log("Este usuario no puede ser eliminado ya que tiene libros a prestamo");
+        }
+    }else {console.log('No hay usuarios para eliminar');}
+    
+
+
+    res.redirect('/');
 })
 
 module.exports = router
