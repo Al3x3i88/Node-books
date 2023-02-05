@@ -28,7 +28,7 @@ router.post('/prestamos/:idUser/:idBook', (req, res) => {
 
     if (!bookFound || !userFound) {
         res.status(404).json({
-            message: "No se puede realiazr un prestamo",
+            message: "No se puede realizar un prestamo",
         });
     }
 

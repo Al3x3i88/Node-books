@@ -13,6 +13,18 @@ router.get('/users', (req, res) => {
     res.render('new-users');
 })
 
+//Obtener un libro solo libro seleccionado por el id
+router.get('/users/:id', (req, res) => {
+    
+    const userFound = arrayUsers.find(user => user.id === req.params.id);
+    
+    if (!userFound)
+        return res.status(404).json({
+            message: "Usuario no encontrado",
+        });
+    res.json(userFound);
+})
+
 // Agregando un nuevo usuario al json
 router.post('/users', (req, res) => {
     const { name, email, password } = req.body;
@@ -36,7 +48,7 @@ router.post('/users', (req, res) => {
 })
 
 // Eliminando un Usuario
-router.get('/deleteUser/:id', (req, res) => {
+router.delete('/deleteUser/:id', (req, res) => {
     let userExist;
     let position;
     if (arrayUsers.length !== 0) {
@@ -63,9 +75,7 @@ router.get('/deleteUser/:id', (req, res) => {
             console.log("Este usuario no puede ser eliminado ya que tiene libros a prestamo");
         }
     }else {console.log('No hay usuarios para eliminar');}
-    
-
-
+   
     res.redirect('/');
 })
 
