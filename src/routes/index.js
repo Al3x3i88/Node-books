@@ -20,7 +20,7 @@ router.get('/new-entry', (req, res) => {
     res.render('new-entry');
 })
 
-// Agregando unnuevo libro al json
+// Agregando un nuevo libro al json
 router.post('/new-entry', (req, res) => {
     const { title, author, image, description } = req.body;
     if (!title || !author || !image || !description) {
@@ -44,7 +44,7 @@ router.post('/new-entry', (req, res) => {
 })
 
 // Eliminando un libro
-router.get('/delete/:id', (req, res) => {
+router.delete('/delete/:id', (req, res) => {
     arrayBooks = arrayBooks.filter(book => book.id != req.params.id);
     fichero = {...fichero, "books":arrayBooks}
     const json_books = JSON.stringify(fichero)
