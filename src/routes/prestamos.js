@@ -31,7 +31,7 @@ router.post('/prestamos/:idUser/:idBook', (req, res) => {
             message: "No se puede realizar un prestamo",
         });
     }
-
+console.log(arrayPrestamos.length);
     if (arrayPrestamos.length !== 0) {
         let libro;
         let posicion = null;
@@ -47,19 +47,20 @@ router.post('/prestamos/:idUser/:idBook', (req, res) => {
         if (libro !== undefined && libro.length !== 0) {
             console.log('El libro ya esta prestado a este usuario');
         }
-        else if (libro === undefined || arrayPrestamos.length === 0) {
+        else if (libro === undefined ) {
             arrayPrestamos.push(newPrestamo)
+            console.log(arrayPrestamos);
         } else
 
             arrayPrestamos[posicion].book.push(bookFound);
         console.log(arrayPrestamos);
 
-    }
+    } else {arrayPrestamos.push(newPrestamo)}
 
     fichero = { ...fichero, "prestamos": arrayPrestamos }
     const json_users = JSON.stringify(fichero)
     fs.writeFileSync('src/books.json', json_users, 'utf-8')
-    res.send('Usuario Agregado correctamente')
+    res.send('Prestamo agregado')
 
 })
 
