@@ -2,6 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const fs = require('fs')
 const { v4: uuidv4 } = require('uuid')
+const nodemailer = require("nodemailer");
 
 const json_db = fs.readFileSync('src/books.json', 'utf-8')
 let fichero = JSON.parse(json_db);
@@ -15,7 +16,7 @@ router.get('/prestamos', (req, res) => {
     console.log(users);
 })
 
-router.post('/prestamos/:idUser/:idBook', (req, res) => {
+router.post('/prestamos/:idUser/:idBook', async(req, res) => {
 
     const bookFound = books.find(book => book.id === req.params.idBook);
     const userFound = users.find(user => user.id === req.params.idUser);
@@ -25,6 +26,20 @@ router.post('/prestamos/:idUser/:idBook', (req, res) => {
         idUser: req.params.idUser,
         book: [bookFound]
     };
+
+    //Crear transporter para el envio de emails
+    const transporter = nodemailer.createTransport ({
+    host: 'smtp.gmail.com',
+    port: '465',
+    secure: 'true',
+    auth: {
+        user: 'alexeirmrz3@gmail.com',
+        pass: 'mhrmjpxersnwgnhp'
+    },
+    tls: {
+        rejectUnauthorized: false 
+    }
+})
 
     if (!bookFound || !userFound) {
         res.status(404).json({
@@ -56,9 +71,19 @@ router.post('/prestamos/:idUser/:idBook', (req, res) => {
 
     } else { arrayPrestamos.push(newPrestamo) }
 
+
+const info = await transporter.sendMail({
+    from: "'Admin Server' <alexeirmrz3@gmail.com>",
+    to: 'alexeirmrz3@gmail.com',
+    subject: 'Estoes nada mas un correo de pruebas',
+    text: 'Me gusta este puto mundo'
+})
+console.log('Message sent', info.messageId);
+
     fichero = { ...fichero, "prestamos": arrayPrestamos }
     const json_users = JSON.stringify(fichero)
     fs.writeFileSync('src/books.json', json_users, 'utf-8')
+
     res.send('Prestamo agregado')
 
 })
