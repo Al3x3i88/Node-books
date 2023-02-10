@@ -5,9 +5,9 @@ const morgan = require('morgan');
 
 const UserRoutes = require('./routes/users');
 const PrestaRoutes = require('./routes/prestamos')
-
+const ValidaRuotes = require ('./routes/validacion')
 //Settings
-app.set('port', 5000);
+app.set('port', 3001);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -17,6 +17,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(UserRoutes);
 app.use(PrestaRoutes);
+app.use(ValidaRuotes);
 
 //Routes
 app.use(require('./routes/index'))
